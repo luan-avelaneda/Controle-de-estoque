@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block titulo %}Notificações{% endblock %}
+
+{% block conteudo %}
+<h1>Notificações de estoque</h1>
+<p class="subtitulo">Ao abrir esta página, as notificações são marcadas como lidas. O histórico é mantido.</p>
+
+<section class="painel">
+    {% if notificacoes %}
+    <div class="tabela-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Data e hora</th>
+                    <th>Produto</th>
+                    <th>Código</th>
+                    <th>Quantidade atual</th>
+                    <th>Alerta</th>
+                    <th>Ocorrência</th>
+                    <th>Leitura</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in notificacoes %}
+                <tr class="{{ 'linha-nao-lida' if not n.lida }}">
+                    <td>{{ n.data_hora|data_br }}</td>
+                    <td>{{ n.nome }}</td>
+                    <td>{{ n.codigo }}</td>
+                    <td>{{ n.quantidade_atual|numero }} {{ n.unidade }}</td>
+                    <td>{{ n.mensagem }}</td>
+                    <td><span class="status {{ 'status-baixo' if n.ativa else 'status-normal' }}">{{ 'Ativa' if n.ativa else 'Resolvida' }}</span></td>
+                    <td>{{ 'Lida' if n.lida else 'Não lida' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p class="vazio">Nenhuma notificação até o momento.</p>
+    {% endif %}
+</section>
+{% endblock %}

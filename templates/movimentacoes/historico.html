@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block titulo %}Histórico{% endblock %}
+
+{% block conteudo %}
+<h1>Histórico de movimentações</h1>
+
+<form class="filtros" method="get" action="{{ url_for('movimentacoes.historico') }}">
+    <select name="produto_id">
+        <option value="">Todos os produtos</option>
+        {% for p in produtos %}
+            <option value="{{ p.id }}" {{ 'selected' if filtro_produto == p.id }}>{{ p.codigo }} — {{ p.nome }}</option>
+        {% endfor %}
+    </select>
+    <select name="tipo">
+        <option value="">Entradas e saídas</option>
+        <option value="entrada" {{ 'selected' if filtro_tipo == 'entrada' }}>Somente entradas</option>
+        <option value="saida" {{ 'selected' if filtro_tipo == 'saida' }}>Somente saídas</option>
+    </select>
+    <button type="submit" class="botao">Filtrar</button>
+    <a class="botao botao-secundario" href="{{ url_for('movimentacoes.historico') }}">Limpar</a>
+</form>
+
+<section class="painel">
+    {% if movimentacoes %}
+    <div class="tabela-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Data e hora</th>
+                    <th>Código</th>
+                    <th>Produto</th>
+                    <th>Tipo</th>
+                    <th>Quantidade</th>
+                    <th>Unidade</th>
+                    <th>Observação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in movimentacoes %}
+                <tr>
+                    <td>{{ m.data_hora|data_br }}</td>
+                    <td>{{ m.codigo }}</td>
+                    <td>{{ m.nome }}</td>
+                    <td><span class="tipo tipo-{{ m.tipo }}">{{ 'Entrada' if m.tipo == 'entrada' else 'Saída' }}</span></td>
+                    <td>{{ m.quantidade|numero }}</td>
+                    <td>{{ m.unidade }}</td>
+                    <td>{{ m.observacao or '—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p class="vazio">Nenhuma movimentação encontrada.</p>
+    {% endif %}
+</section>
+{% endblock %}

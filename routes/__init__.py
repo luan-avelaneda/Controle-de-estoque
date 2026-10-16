@@ -1,0 +1,1 @@
+"""Pacote com as rotas do sistema, organizadas por área."""

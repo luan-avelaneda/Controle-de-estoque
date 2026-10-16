@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block titulo %}Produtos e estoque{% endblock %}
+
+{% block conteudo %}
+<div class="titulo-linha">
+    <h1>Produtos e estoque</h1>
+    <a class="botao" href="{{ url_for('produtos.novo') }}">+ Novo produto</a>
+</div>
+
+<form class="filtros" method="get" action="{{ url_for('produtos.listar') }}">
+    <input type="text" name="q" value="{{ busca }}" placeholder="Pesquisar por código ou nome">
+    <button type="submit" class="botao">Pesquisar</button>
+    {% if busca %}<a class="botao botao-secundario" href="{{ url_for('produtos.listar') }}">Limpar</a>{% endif %}
+</form>
+
+<section class="painel">
+    {% if produtos %}
+    <div class="tabela-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nome</th>
+                    <th>Unidade</th>
+                    <th>Quantidade atual</th>
+                    <th>Estoque de referência</th>
+                    <th>% restante</th>
+                    <th>Status</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in produtos %}
+                <tr class="{{ 'linha-inativa' if not p.ativo }}">
+                    <td>{{ p.codigo }}</td>
+                    <td>{{ p.nome }}</td>
+                    <td>{{ p.unidade }}</td>
+                    <td>{{ p.quantidade_atual|numero }}</td>
+                    <td>{{ p.estoque_referencia|numero }}</td>
+                    <td>{{ p.percentual|percentual }}</td>
+                    <td><span class="status status-{{ p.status }}">{{ p.status_texto }}</span></td>
+                    <td>{{ 'Ativo' if p.ativo else 'Inativo' }}</td>
+                    <td class="acoes">
+                        <a class="botao botao-pequeno" href="{{ url_for('produtos.editar', produto_id=p.id) }}">Editar</a>
+                        <form method="post" action="{{ url_for('produtos.alternar', produto_id=p.id) }}">
+                            <button type="submit" class="botao botao-pequeno botao-secundario">
+                                {{ 'Desativar' if p.ativo else 'Reativar' }}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p class="vazio">Nenhum produto encontrado.</p>
+    {% endif %}
+</section>
+{% endblock %}

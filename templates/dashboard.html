@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block titulo %}Dashboard{% endblock %}
+
+{% block conteudo %}
+<h1>Dashboard</h1>
+
+<section class="cartoes">
+    <div class="cartao cartao-azul">
+        <span class="cartao-valor">{{ resumo.total_produtos }}</span>
+        <span class="cartao-rotulo">Produtos cadastrados</span>
+    </div>
+    <div class="cartao cartao-amarelo">
+        <span class="cartao-valor">{{ resumo.total_baixo }}</span>
+        <span class="cartao-rotulo">Estoque baixo</span>
+    </div>
+    <div class="cartao cartao-vermelho">
+        <span class="cartao-valor">{{ resumo.total_sem_estoque }}</span>
+        <span class="cartao-rotulo">Sem estoque</span>
+    </div>
+    <div class="cartao cartao-verde">
+        <span class="cartao-valor">{{ resumo.total_entradas }}</span>
+        <span class="cartao-rotulo">Entradas registradas</span>
+    </div>
+    <div class="cartao cartao-cinza">
+        <span class="cartao-valor">{{ resumo.total_saidas }}</span>
+        <span class="cartao-rotulo">Saídas registradas</span>
+    </div>
+</section>
+
+<section class="painel">
+    <h2>Situação dos produtos</h2>
+    {% if resumo.produtos %}
+    <div class="tabela-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nome</th>
+                    <th>Quantidade atual</th>
+                    <th>Unidade</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in resumo.produtos %}
+                <tr>
+                    <td>{{ p.codigo }}</td>
+                    <td>{{ p.nome }}</td>
+                    <td>{{ p.quantidade_atual|numero }}</td>
+                    <td>{{ p.unidade }}</td>
+                    <td><span class="status status-{{ p.status }}">{{ p.status_texto }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p class="vazio">Nenhum produto cadastrado ainda. <a href="{{ url_for('produtos.novo') }}">Cadastre o primeiro produto</a>.</p>
+    {% endif %}
+</section>
+{% endblock %}

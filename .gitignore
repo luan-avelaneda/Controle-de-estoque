@@ -1,0 +1,17 @@
+# Ambiente virtual
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Banco local gerado na execução
+estoque.db
+*.db
+*.sqlite3
+
+# Editor e sistema
+.vscode/
+.DS_Store
+Thumbs.db

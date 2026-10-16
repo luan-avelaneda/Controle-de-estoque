@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+
+{% block conteudo %}
+<h1>{{ titulo }}</h1>
+
+<section class="painel painel-formulario">
+    {% if produtos %}
+    <form method="post" class="formulario">
+        <label for="produto_id">Produto *</label>
+        <select id="produto_id" name="produto_id" required>
+            <option value="">Selecione...</option>
+            {% for p in produtos %}
+                <option value="{{ p.id }}" {{ 'selected' if dados.get('produto_id')|string == p.id|string }}>
+                    {{ p.codigo }} — {{ p.nome }} (disponível: {{ p.quantidade_atual|numero }} {{ p.unidade }})
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="quantidade">Quantidade a retirar *</label>
+        <input type="text" inputmode="decimal" id="quantidade" name="quantidade"
+               value="{{ dados.get('quantidade', '') }}" placeholder="Ex.: 5 ou 1,5" required>
+
+        <label for="observacao">Motivo da retirada (opcional)</label>
+        <input type="text" id="observacao" name="observacao" value="{{ dados.get('observacao', '') }}" maxlength="200">
+
+        <small>A data e a hora são registradas automaticamente. O saldo nunca fica negativo.</small>
+
+        <div class="formulario-botoes">
+            <button type="submit" class="botao">Registrar saída</button>
+        </div>
+    </form>
+    {% else %}
+        <p class="vazio">Não há produtos ativos. <a href="{{ url_for('produtos.novo') }}">Cadastre um produto</a> primeiro.</p>
+    {% endif %}
+</section>
+{% endblock %}

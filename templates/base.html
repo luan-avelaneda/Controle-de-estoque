@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Eduluo{% endblock %} | Eduluo — Controle de Estoque</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% set ep = request.endpoint or '' %}
+    <header class="cabecalho">
+        <div class="cabecalho-topo">
+            <a class="marca" href="{{ url_for('dashboard.index') }}">
+                <span class="marca-nome">Eduluo</span>
+                <span class="marca-sub">Controle de Estoque</span>
+            </a>
+            <a class="sino" href="{{ url_for('notificacoes.listar') }}" title="Notificações" aria-label="Notificações">
+                <span class="sino-icone">🔔</span>
+                {% if notificacoes_nao_lidas > 0 %}
+                    <span class="contador">{{ notificacoes_nao_lidas }}</span>
+                {% endif %}
+            </a>
+        </div>
+        <nav class="menu">
+            <a href="{{ url_for('dashboard.index') }}" class="{{ 'ativo' if ep == 'dashboard.index' }}">Dashboard</a>
+            <a href="{{ url_for('produtos.listar') }}" class="{{ 'ativo' if ep.startswith('produtos.') }}">Produtos e estoque</a>
+            <a href="{{ url_for('movimentacoes.entrada') }}" class="{{ 'ativo' if ep == 'movimentacoes.entrada' }}">Entrada</a>
+            <a href="{{ url_for('movimentacoes.saida') }}" class="{{ 'ativo' if ep == 'movimentacoes.saida' }}">Saída</a>
+            <a href="{{ url_for('movimentacoes.historico') }}" class="{{ 'ativo' if ep == 'movimentacoes.historico' }}">Histórico</a>
+        </nav>
+    </header>
+
+    <main class="conteudo">
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+            {% for categoria, mensagem in mensagens %}
+                <div class="mensagem mensagem-{{ categoria }}">{{ mensagem }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        {% block conteudo %}{% endblock %}
+    </main>
+
+    <footer class="rodape">Eduluo — Controle de Estoque · Projeto acadêmico</footer>
+</body>
+</html>
