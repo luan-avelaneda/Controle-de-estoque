@@ -212,7 +212,7 @@ input[type="text"]:focus, select:focus {
 .filtros { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
 .filtros input[type="text"], .filtros select { width: auto; flex: 1 1 220px; }
 
-/* ---------- Rodapé ---------- */
+/* ---------- Rodapé --- ---------- */
 .rodape { text-align: center; color: var(--cinza-texto); font-size: 0.85rem; padding: 16px; }
 
 /* ---------- Telas menores ---------- */
