@@ -2,6 +2,8 @@
 
 Sistema web simples de controle de estoque (projeto acadêmico), feito com **Python, Flask, SQLite, HTML e CSS**.
 
+Alunos: Eduardo Meurer, Luan Avelaneda e Otavio Santos
+
 ## Funcionalidades
 - Dashboard com indicadores calculados a partir do banco
 - Cadastro, edição e desativação de produtos
