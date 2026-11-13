@@ -73,7 +73,28 @@ def inicializar_banco():
                     ativa INTEGER NOT NULL DEFAULT 1,
                     FOREIGN KEY (produto_id) REFERENCES produtos (id)
                 );
-                """
+                CREATE TABLE IF NOT EXISTS empresas (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                cnpj TEXT NOT NULL UNIQUE,
+                razao_social TEXT NOT NULL,
+                nome_fantasia TEXT,
+                telefone TEXT,
+                email TEXT,
+                ativo INTEGER NOT NULL DEFAULT 1
+                );
+
+                CREATE TABLE IF NOT EXISTS usuarios (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                empresa_id INTEGER NOT NULL,
+                cpf TEXT NOT NULL UNIQUE,
+                nome TEXT NOT NULL,
+                cargo TEXT,
+                email TEXT,
+                telefone TEXT,
+                ativo INTEGER NOT NULL DEFAULT 1,
+                FOREIGN KEY (empresa_id) REFERENCES empresas (id)
+                );
+"""
             )
     finally:
         conexao.close()
@@ -391,4 +412,139 @@ def resumo_dashboard():
         "total_entradas": entradas,
         "total_saidas": saidas,
         "produtos": produtos,
+
+
+# ---------------------------------------------------------------------------
+# Empresas
+# ---------------------------------------------------------------------------
+def listar_empresas(busca="", somente_ativos=False):
+    sql = "SELECT * FROM empresas WHERE 1 = 1"
+    parametros = []
+    if busca:
+        sql += " AND (cnpj LIKE ? OR razao_social LIKE ? OR nome_fantasia LIKE ?)"
+        parametros += [f"%{busca}%", f"%{busca}%", f"%{busca}%"]
+    if somente_ativos:
+        sql += " AND ativo = 1"
+    sql += " ORDER BY razao_social COLLATE NOCASE"
+
+    conexao = conectar()
+    try:
+        return [dict(l) for l in conexao.execute(sql, parametros).fetchall()]
+    finally:
+        conexao.close()
+
+def buscar_empresa(empresa_id):
+    conexao = conectar()
+    try:
+        linha = conexao.execute("SELECT * FROM empresas WHERE id = ?", (empresa_id,)).fetchone()
+        return dict(linha) if linha else None
+    finally:
+        conexao.close()
+
+def criar_empresa(cnpj, razao_social, nome_fantasia, telefone, email):
+    conexao = conectar()
+    try:
+        with conexao:
+            cursor = conexao.execute(
+                """INSERT INTO empresas (cnpj, razao_social, nome_fantasia, telefone, email, ativo)
+                   VALUES (?, ?, ?, ?, ?, 1)""",
+                (cnpj, razao_social, nome_fantasia, telefone, email)
+            )
+            return cursor.lastrowid
+    finally:
+        conexao.close()
+
+def atualizar_empresa(empresa_id, cnpj, razao_social, nome_fantasia, telefone, email):
+    conexao = conectar()
+    try:
+        with conexao:
+            conexao.execute(
+                """UPDATE empresas 
+                   SET cnpj = ?, razao_social = ?, nome_fantasia = ?, telefone = ?, email = ?
+                   WHERE id = ?""",
+                (cnpj, razao_social, nome_fantasia, telefone, email, empresa_id)
+            )
+    finally:
+        conexao.close()
+
+def alterar_situacao_empresa(empresa_id, ativo):
+    conexao = conectar()
+    try:
+        with conexao:
+            conexao.execute("UPDATE empresas SET ativo = ? WHERE id = ?", (1 if ativo else 0, empresa_id))
+    finally:
+        conexao.close()
+
+# ---------------------------------------------------------------------------
+# Usuários
+# ---------------------------------------------------------------------------
+def listar_usuarios(busca="", empresa_id=None, somente_ativos=False):
+    sql = """SELECT u.*, e.razao_social as empresa_nome, e.nome_fantasia as empresa_fantasia 
+             FROM usuarios u
+             JOIN empresas e ON e.id = u.empresa_id
+             WHERE 1 = 1"""
+    parametros = []
+    if busca:
+        sql += " AND (f.cpf LIKE ? OR f.nome LIKE ? OR f.cargo LIKE ?)"
+        parametros += [f"%{busca}%", f"%{busca}%", f"%{busca}%"]
+    if empresa_id:
+        sql += " AND f.empresa_id = ?"
+        parametros.append(empresa_id)
+    if somente_ativos:
+        sql += " AND f.ativo = 1"
+    sql += " ORDER BY f.nome COLLATE NOCASE"
+
+    conexao = conectar()
+    try:
+        return [dict(l) for l in conexao.execute(sql, parametros).fetchall()]
+    finally:
+        conexao.close()
+
+def buscar_usuarios(usuarios_id):
+    conexao = conectar()
+    try:
+        linha = conexao.execute(
+            """SELECT u.*, e.razao_social as empresa_nome 
+               FROM usuarios u 
+               JOIN empresas e ON e.id = u.empresa_id 
+               WHERE u.id = ?""", 
+            (usuarios_id,)
+        ).fetchone()
+        return dict(linha) if linha else None
+    finally:
+        conexao.close()
+
+def criar_usuarios(empresa_id, cpf, nome, cargo, email, telefone):
+    conexao = conectar()
+    try:
+        with conexao:
+            cursor = conexao.execute(
+                """INSERT INTO usuarios (empresa_id, cpf, nome, cargo, email, telefone, ativo)
+                   VALUES (?, ?, ?, ?, ?, ?, 1)""",
+                (empresa_id, cpf, nome, cargo, email, telefone)
+            )
+            return cursor.lastrowid
+    finally:
+        conexao.close()
+
+def atualizar_usuarios(usuarios_id, empresa_id, cpf, nome, cargo, email, telefone):
+    conexao = conectar()
+    try:
+        with conexao:
+            conexao.execute(
+                """UPDATE usuarios 
+                   SET empresa_id = ?, cpf = ?, nome = ?, cargo = ?, email = ?, telefone = ?
+                   WHERE id = ?""",
+                (empresa_id, cpf, nome, cargo, email, telefone, usuarios_id)
+            )
+    finally:
+        conexao.close()
+
+def alterar_situacao_usuarios(usuarios_id, ativo):
+    conexao = conectar()
+    try:
+        with conexao:
+            conexao.execute("UPDATE usuarios SET ativo = ? WHERE id = ?", (1 if ativo else 0, usuarios_id))
+    finally:
+        conexao.close()
     }

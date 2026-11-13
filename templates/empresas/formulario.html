@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+
+{% block conteudo %}
+<h1>{{ titulo }}</h1>
+
+<section class="painel painel-formulario">
+    <form method="post" class="formulario">
+        <label for="cnpj">CNPJ *</label>
+        <input type="text" id="cnpj" name="cnpj" value="{{ dados.get('cnpj', '') }}" maxlength="20" placeholder="00.000.000/0000-00" required>
+
+        <label for="razao_social">Razão Social *</label>
+        <input type="text" id="razao_social" name="razao_social" value="{{ dados.get('razao_social', '') }}" maxlength="150" required>
+
+        <label for="nome_fantasia">Nome Fantasia</label>
+        <input type="text" id="nome_fantasia" name="nome_fantasia" value="{{ dados.get('nome_fantasia', '') }}" maxlength="150">
+
+        <label for="telefone">Telefone</label>
+        <input type="text" id="telefone" name="telefone" value="{{ dados.get('telefone', '') }}" maxlength="20">
+
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" value="{{ dados.get('email', '') }}" maxlength="100">
+
+        <div class="formulario-botoes">
+            <button type="submit" class="botao">Salvar</button>
+            <a class="botao botao-secundario" href="{{ url_for('empresas.listar') }}">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

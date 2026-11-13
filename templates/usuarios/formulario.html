@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+
+{% block conteudo %}
+<h1>{{ titulo }}</h1>
+
+<section class="painel painel-formulario">
+    <form method="post" class="formulario">
+        <label for="empresa_id">Empresa *</label>
+        <select id="empresa_id" name="empresa_id" required>
+            <option value="">Selecione a empresa...</option>
+            {% for emp in empresas %}
+                <option value="{{ emp.id }}" {{ 'selected' if (dados.get('empresa_id')|string) == (emp.id|string) }}>{{ emp.razao_social }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="cpf">CPF *</label>
+        <input type="text" id="cpf" name="cpf" value="{{ dados.get('cpf', '') }}" maxlength="15" placeholder="000.000.000-00" required>
+
+        <label for="nome">Nome completo *</label>
+        <input type="text" id="nome" name="nome" value="{{ dados.get('nome', '') }}" maxlength="100" required>
+
+        <label for="cargo">Cargo / Função</label>
+        <input type="text" id="cargo" name="cargo" value="{{ dados.get('cargo', '') }}" maxlength="80">
+
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" value="{{ dados.get('email', '') }}" maxlength="100">
+
+        <label for="telefone">Telefone</label>
+        <input type="text" id="telefone" name="telefone" value="{{ dados.get('telefone', '') }}" maxlength="20">
+
+        <div class="formulario-botoes">
+            <button type="submit" class="botao">Salvar</button>
+            <a class="botao botao-secundario" href="{{ url_for('usuarios.listar') }}">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}
