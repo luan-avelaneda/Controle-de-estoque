@@ -4,7 +4,7 @@ from datetime import datetime
 from flask import Flask
 
 import database as db
-from routes import dashboard, movimentacoes, notificacoes, produtos
+from routes import dashboard, movimentacoes, notificacoes, produtos, empresas, usuarios
 
 
 def criar_app():
@@ -18,6 +18,8 @@ def criar_app():
     app.register_blueprint(produtos.bp)
     app.register_blueprint(movimentacoes.bp)
     app.register_blueprint(notificacoes.bp)
+    app.register_blueprint(empresas.bp)         # Adicionado
+    app.register_blueprint(usuarios.bp)         # Adicionado
 
     @app.context_processor
     def dados_comuns():
