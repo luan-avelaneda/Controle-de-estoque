@@ -1,0 +1,31 @@
+{% extends "auth/base_acesso.html" %}
+{% block titulo %}Criar conta{% endblock %}
+
+{% block conteudo %}
+<h1 class="acesso-titulo">Criar conta</h1>
+<p class="acesso-subtitulo">Leva menos de um minuto.</p>
+
+<form method="post" class="acesso-form" novalidate>
+    <label for="nome">Nome</label>
+    <input type="text" id="nome" name="nome" value="{{ nome }}" maxlength="100"
+           placeholder="Seu nome" autocomplete="name" autofocus required>
+
+    <label for="email">E-mail</label>
+    <input type="email" id="email" name="email" value="{{ email }}" maxlength="100"
+           placeholder="voce@exemplo.com" autocomplete="email" required>
+
+    <label for="senha">Senha</label>
+    <input type="password" id="senha" name="senha" minlength="6"
+           placeholder="Mínimo de 6 caracteres" autocomplete="new-password" required>
+
+    <label for="confirmacao">Confirmar senha</label>
+    <input type="password" id="confirmacao" name="confirmacao" minlength="6"
+           placeholder="Repita a senha" autocomplete="new-password" required>
+
+    <button type="submit" class="acesso-botao">Criar conta</button>
+</form>
+
+<p class="acesso-alternativa">
+    Já tem conta? <a href="{{ url_for('auth.login') }}">Entrar</a>
+</p>
+{% endblock %}

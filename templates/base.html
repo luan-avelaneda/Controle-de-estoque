@@ -14,12 +14,20 @@
                 <span class="marca-nome">Eduluo</span>
                 <span class="marca-sub">Controle de Estoque</span>
             </a>
-            <a class="sino" href="{{ url_for('notificacoes.listar') }}" title="Notificações" aria-label="Notificações">
-                <span class="sino-icone">🔔</span>
-                {% if notificacoes_nao_lidas > 0 %}
-                    <span class="contador">{{ notificacoes_nao_lidas }}</span>
+            <div class="cabecalho-acoes">
+                <a class="sino" href="{{ url_for('notificacoes.listar') }}" title="Notificações" aria-label="Notificações">
+                    <span class="sino-icone">🔔</span>
+                    {% if notificacoes_nao_lidas > 0 %}
+                        <span class="contador">{{ notificacoes_nao_lidas }}</span>
+                    {% endif %}
+                </a>
+                {% if conta_nome %}
+                    <span class="conta-nome" title="Conta conectada">{{ conta_nome }}</span>
+                    <form method="post" action="{{ url_for('auth.sair') }}" class="form-sair">
+                        <button type="submit" class="botao-sair">Sair</button>
+                    </form>
                 {% endif %}
-            </a>
+            </div>
         </div>
         <nav class="menu">
             <a href="{{ url_for('dashboard.index') }}" class="{{ 'ativo' if ep == 'dashboard.index' }}">Dashboard</a>

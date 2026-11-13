@@ -1,0 +1,25 @@
+{% extends "auth/base_acesso.html" %}
+{% block titulo %}Entrar{% endblock %}
+
+{% block conteudo %}
+<h1 class="acesso-titulo">Entrar</h1>
+<p class="acesso-subtitulo">Acesse sua conta para continuar.</p>
+
+<form method="post" class="acesso-form" novalidate>
+    <input type="hidden" name="proximo" value="{{ proximo }}">
+
+    <label for="email">E-mail</label>
+    <input type="email" id="email" name="email" value="{{ email }}" maxlength="100"
+           placeholder="voce@exemplo.com" autocomplete="email" autofocus required>
+
+    <label for="senha">Senha</label>
+    <input type="password" id="senha" name="senha" placeholder="Sua senha"
+           autocomplete="current-password" required>
+
+    <button type="submit" class="acesso-botao">Entrar</button>
+</form>
+
+<p class="acesso-alternativa">
+    Não tem conta? <a href="{{ url_for('auth.cadastro') }}">Cadastre-se</a>
+</p>
+{% endblock %}

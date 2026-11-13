@@ -7,6 +7,8 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
+from werkzeug.security import check_password_hash, generate_password_hash
+
 CAMINHO_BANCO = Path(__file__).resolve().parent / "estoque.db"
 
 # Alerta de estoque baixo: saldo <= 10% do estoque de referência
@@ -93,6 +95,14 @@ def inicializar_banco():
                 telefone TEXT,
                 ativo INTEGER NOT NULL DEFAULT 1,
                 FOREIGN KEY (empresa_id) REFERENCES empresas (id)
+                );
+
+                CREATE TABLE IF NOT EXISTS contas (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    nome TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE COLLATE NOCASE,
+                    senha_hash TEXT NOT NULL,
+                    criado_em TEXT NOT NULL
                 );
 """
             )
@@ -545,5 +555,49 @@ def alterar_situacao_usuario(usuario_id, ativo):
     try:
         with conexao:
             conexao.execute("UPDATE usuarios SET ativo = ? WHERE id = ?", (1 if ativo else 0, usuario_id))
+    finally:
+        conexao.close()
+
+# ---------------------------------------------------------------------------
+# Contas de acesso (login)
+# ---------------------------------------------------------------------------
+def criar_conta(nome, email, senha):
+    """Cria a conta guardando apenas o hash da senha.
+
+    Levanta sqlite3.IntegrityError se o e-mail já estiver cadastrado.
+    """
+    conexao = conectar()
+    try:
+        with conexao:
+            cursor = conexao.execute(
+                "INSERT INTO contas (nome, email, senha_hash, criado_em) VALUES (?, ?, ?, ?)",
+                (nome, email.lower(), generate_password_hash(senha), _agora()),
+            )
+            return cursor.lastrowid
+    finally:
+        conexao.close()
+
+
+def autenticar_conta(email, senha):
+    """Retorna a conta (dict) se e-mail e senha conferirem; senão, None."""
+    conexao = conectar()
+    try:
+        linha = conexao.execute(
+            "SELECT * FROM contas WHERE email = ?", (email.lower(),)
+        ).fetchone()
+    finally:
+        conexao.close()
+    if linha and check_password_hash(linha["senha_hash"], senha):
+        return dict(linha)
+    return None
+
+
+def buscar_conta(conta_id):
+    conexao = conectar()
+    try:
+        linha = conexao.execute(
+            "SELECT id, nome, email, criado_em FROM contas WHERE id = ?", (conta_id,)
+        ).fetchone()
+        return dict(linha) if linha else None
     finally:
         conexao.close()

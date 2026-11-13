@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Acesso{% endblock %} | Eduluo — Controle de Estoque</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="pagina-acesso">
+    <main class="acesso">
+        <div class="acesso-cartao">
+            <div class="acesso-marca">
+                <span class="acesso-logo" aria-hidden="true">E</span>
+                <div>
+                    <span class="acesso-marca-nome">Eduluo</span>
+                    <span class="acesso-marca-sub">Controle de Estoque</span>
+                </div>
+            </div>
+
+            {% with mensagens = get_flashed_messages(with_categories=true) %}
+                {% for categoria, mensagem in mensagens %}
+                    <div class="mensagem mensagem-{{ categoria }}">{{ mensagem }}</div>
+                {% endfor %}
+            {% endwith %}
+
+            {% block conteudo %}{% endblock %}
+        </div>
+        <p class="acesso-rodape">Projeto acadêmico · dados armazenados localmente</p>
+    </main>
+</body>
+</html>
