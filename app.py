@@ -1,10 +1,13 @@
 """Ponto de entrada do Eduluo — Controle de Estoque."""
 from datetime import datetime
 
-from flask import Flask
+from flask import Flask, redirect, request, session, url_for
 
 import database as db
-from routes import dashboard, movimentacoes, notificacoes, produtos, empresas, usuarios
+from routes import auth, dashboard, movimentacoes, notificacoes, produtos, empresas, usuarios
+
+# Páginas que podem ser abertas sem estar logado
+ROTAS_PUBLICAS = {"auth.login", "auth.cadastro", "static"}
 
 
 def criar_app():
@@ -14,6 +17,7 @@ def criar_app():
 
     db.inicializar_banco()
 
+    app.register_blueprint(auth.bp)
     app.register_blueprint(dashboard.bp)
     app.register_blueprint(produtos.bp)
     app.register_blueprint(movimentacoes.bp)
@@ -21,10 +25,30 @@ def criar_app():
     app.register_blueprint(empresas.bp)         # Adicionado
     app.register_blueprint(usuarios.bp)         # Adicionado
 
+    @app.before_request
+    def exigir_login():
+        """Toda página do sistema exige login; sem sessão, vai para a tela de login."""
+        if request.endpoint in ROTAS_PUBLICAS:
+            return None
+        conta_id = session.get("conta_id")
+        if conta_id and db.buscar_conta(conta_id):
+            return None
+        session.clear()
+        # Guarda a página pedida para voltar a ela depois do login
+        proximo = request.full_path.rstrip("?") if request.method == "GET" else ""
+        if proximo == "/":
+            proximo = ""
+        return redirect(url_for("auth.login", proximo=proximo or None))
+
     @app.context_processor
     def dados_comuns():
+        if not session.get("conta_id"):
+            return {"notificacoes_nao_lidas": 0, "conta_nome": None}
         # Contador do sino: calculado no banco a cada página carregada
-        return {"notificacoes_nao_lidas": db.contar_nao_lidas()}
+        return {
+            "notificacoes_nao_lidas": db.contar_nao_lidas(),
+            "conta_nome": session.get("conta_nome"),
+        }
 
     @app.template_filter("numero")
     def filtro_numero(valor):

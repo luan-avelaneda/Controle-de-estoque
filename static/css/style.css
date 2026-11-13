@@ -225,3 +225,100 @@ input[type="text"]:focus, select:focus {
     .painel { padding: 14px; }
     table { font-size: 0.85rem; }
 }
+/* ---------- Cabeçalho: conta conectada ---------- */
+.cabecalho-acoes { display: flex; align-items: center; gap: 14px; }
+.conta-nome { font-size: 0.9rem; opacity: 0.9; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.form-sair { margin: 0; }
+.botao-sair {
+    background: transparent;
+    color: var(--branco);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+    padding: 5px 14px;
+    font: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+.botao-sair:hover { background: rgba(255, 255, 255, 0.12); }
+
+/* ---------- Telas de acesso (login e cadastro) ---------- */
+.pagina-acesso {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #eef2ff 0%, var(--cinza-fundo) 55%);
+}
+
+.acesso {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+}
+
+.acesso-cartao {
+    width: 100%;
+    max-width: 380px;
+    background: var(--branco);
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 32px 28px;
+    box-shadow: 0 10px 30px rgba(30, 58, 138, 0.08);
+}
+
+.acesso-marca { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+.acesso-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--azul);
+    color: var(--branco);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+.acesso-marca-nome { display: block; font-weight: 700; font-size: 1.1rem; color: var(--azul-escuro); line-height: 1.2; }
+.acesso-marca-sub { display: block; font-size: 0.8rem; color: var(--cinza-texto); }
+
+.acesso-titulo { font-size: 1.4rem; margin: 0 0 4px; color: var(--texto); }
+.acesso-subtitulo { margin: 0 0 22px; color: var(--cinza-texto); font-size: 0.95rem; }
+
+.acesso-form { display: flex; flex-direction: column; }
+.acesso-form label { font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #374151; }
+.acesso-form input {
+    font: inherit;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    border: 1px solid var(--cinza-borda);
+    border-radius: 8px;
+    background: #fafafa;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.acesso-form input:focus {
+    outline: none;
+    border-color: var(--azul);
+    background: var(--branco);
+    box-shadow: 0 0 0 3px var(--azul-claro);
+}
+
+.acesso-botao {
+    margin-top: 6px;
+    padding: 11px;
+    border: none;
+    border-radius: 8px;
+    background: var(--azul);
+    color: var(--branco);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.acesso-botao:hover { background: var(--azul-escuro); }
+
+.acesso-alternativa { text-align: center; margin: 22px 0 0; font-size: 0.9rem; color: var(--cinza-texto); }
+.acesso-alternativa a { font-weight: 600; text-decoration: none; }
+.acesso-alternativa a:hover { text-decoration: underline; }
+
+.acesso-cartao .mensagem { font-size: 0.9rem; padding: 10px 12px; }
+.acesso-rodape { margin-top: 18px; font-size: 0.8rem; color: #9ca3af; }
