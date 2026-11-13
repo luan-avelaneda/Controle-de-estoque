@@ -485,14 +485,14 @@ def listar_usuarios(busca="", empresa_id=None, somente_ativos=False):
              WHERE 1 = 1"""
     parametros = []
     if busca:
-        sql += " AND (f.cpf LIKE ? OR f.nome LIKE ? OR f.cargo LIKE ?)"
+        sql += " AND (u.cpf LIKE ? OR u.nome LIKE ? OR u.cargo LIKE ?)"
         parametros += [f"%{busca}%", f"%{busca}%", f"%{busca}%"]
     if empresa_id:
-        sql += " AND f.empresa_id = ?"
+        sql += " AND u.empresa_id = ?"
         parametros.append(empresa_id)
     if somente_ativos:
-        sql += " AND f.ativo = 1"
-    sql += " ORDER BY f.nome COLLATE NOCASE"
+        sql += " AND u.ativo = 1"
+    sql += " ORDER BY u.nome COLLATE NOCASE"
 
     conexao = conectar()
     try:
@@ -500,7 +500,7 @@ def listar_usuarios(busca="", empresa_id=None, somente_ativos=False):
     finally:
         conexao.close()
 
-def buscar_usuarios(usuarios_id):
+def buscar_usuario(usuario_id):
     conexao = conectar()
     try:
         linha = conexao.execute(
@@ -508,13 +508,13 @@ def buscar_usuarios(usuarios_id):
                FROM usuarios u 
                JOIN empresas e ON e.id = u.empresa_id 
                WHERE u.id = ?""", 
-            (usuarios_id,)
+            (usuario_id,)
         ).fetchone()
         return dict(linha) if linha else None
     finally:
         conexao.close()
 
-def criar_usuarios(empresa_id, cpf, nome, cargo, email, telefone):
+def criar_usuario(empresa_id, cpf, nome, cargo, email, telefone):
     conexao = conectar()
     try:
         with conexao:
@@ -527,7 +527,7 @@ def criar_usuarios(empresa_id, cpf, nome, cargo, email, telefone):
     finally:
         conexao.close()
 
-def atualizar_usuarios(usuarios_id, empresa_id, cpf, nome, cargo, email, telefone):
+def atualizar_usuario(usuario_id, empresa_id, cpf, nome, cargo, email, telefone):
     conexao = conectar()
     try:
         with conexao:
@@ -535,16 +535,15 @@ def atualizar_usuarios(usuarios_id, empresa_id, cpf, nome, cargo, email, telefon
                 """UPDATE usuarios 
                    SET empresa_id = ?, cpf = ?, nome = ?, cargo = ?, email = ?, telefone = ?
                    WHERE id = ?""",
-                (empresa_id, cpf, nome, cargo, email, telefone, usuarios_id)
+                (empresa_id, cpf, nome, cargo, email, telefone, usuario_id)
             )
     finally:
         conexao.close()
 
-def alterar_situacao_usuarios(usuarios_id, ativo):
+def alterar_situacao_usuario(usuario_id, ativo):
     conexao = conectar()
     try:
         with conexao:
-            conexao.execute("UPDATE usuarios SET ativo = ? WHERE id = ?", (1 if ativo else 0, usuarios_id))
+            conexao.execute("UPDATE usuarios SET ativo = ? WHERE id = ?", (1 if ativo else 0, usuario_id))
     finally:
         conexao.close()
-    }
