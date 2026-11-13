@@ -4,7 +4,7 @@ from datetime import datetime
 from flask import Flask
 
 import database as db
-from routes import dashboard, movimentacoes, notificacoes, produtos, empresas, funcionarios
+from routes import dashboard, movimentacoes, notificacoes, produtos, empresas, usuarios
 
 
 def criar_app():
